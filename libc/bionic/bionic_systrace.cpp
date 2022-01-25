@@ -127,6 +127,21 @@ void bionic_trace_end() {
   tls.bionic_systrace_disabled = false;
 }
 
+void bionic_trace_end() {
+  // Some functions called by trace_end_internal() can call
+  // bionic_trace_begin(). Prevent infinite recursion and non-recursive mutex
+  // deadlock by using a flag in the thread local storage.
+  bionic_tls& tls = __get_bionic_tls();
+  if (tls.bionic_systrace_disabled) {
+    return;
+  }
+  tls.bionic_systrace_disabled = true;
+
+  trace_end_internal();
+
+  tls.bionic_systrace_disabled = false;
+}
+
 ScopedTrace::ScopedTrace(const char* message) : called_end_(false) {
   bionic_trace_begin(message);
 }
