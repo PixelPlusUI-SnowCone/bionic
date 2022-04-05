@@ -44,6 +44,7 @@
 
 #include <platform/bionic/macros.h>
 #include <private/bionic_malloc_dispatch.h>
+#include <tests/utils.h>
 
 #include <unwindstack/Unwinder.h>
 
